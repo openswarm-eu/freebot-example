@@ -19,6 +19,7 @@ compile:
         - nrfutil toolchain-manager install --ncs-version $TOOLCHAIN_VERSION --install-dir $NCS_INSTALL_DIR
         - cd $NCS_INSTALL_DIR
         - nrfutil toolchain-manager launch -- west init -m https://github.com/nrfconnect/sdk-nrf --mr $SDK_VERSION || if [ $? -eq 1 ]; then echo "[WARN] Could not initialize SDK"; fi
+        - ls $NCS_INSTALL_DIR
         - nrfutil toolchain-manager launch -- west update
         - nrfutil toolchain-manager launch -- west zephyr-export
     cache:
