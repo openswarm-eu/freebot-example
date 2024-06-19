@@ -1,0 +1,9 @@
+check:
+    script:
+      - echo "[TODO] Run linter/static analyser"
+
+build:
+    needs: 
+        - check
+    script:
+        - echo "[TODO] Build project"
