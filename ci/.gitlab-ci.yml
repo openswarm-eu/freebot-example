@@ -1,9 +1,35 @@
-check:
-    script:
-      - echo "[TODO] Run linter/static analyser"
+stages:
+    - build
+    - test
 
-build:
-    needs: 
-        - check
+variables:
+    TOOLCHAIN_VERSION: v2.6.0
+    SDK_VERSION: v2.6.0
+
+default:
+    image: ubuntu:latest
+
+compile:
+    stage: build
+    before_script:
+        - apt-get update && apt-get install wget make cmake -y
+        - wget https://developer.nordicsemi.com/.pc-tools/nrfutil/x64-linux/nrfutil -O /usr/local/bin/nrfutil && chmod +x /usr/local/bin/nrfutil
+        - nrfutil install toolchain-manager
+        - nrfutil toolchain-manager install --ncs-version $TOOLCHAIN_VERSION && cd ncs/
+        - nrfutil toolchain-manager launch -- west init -m https://github.com/nrfconnect/sdk-nrf -mr $SDK_VERSION || if [ $? -eq 1 ]; then echo "[WARN] Could not initialize SDK"; fi
+        - nrfutil toolchain-manager launch -- west update
+        - nrfutil toolchain-manager launch -- west zephyr-export
+        - source zephyr/zephyr-env.sh
+    cache:
+        key: $CI_COMMIT_REF_NAME
+        when: always
+        paths:
+            - /root/ncs/
     script:
+        - ls -alh
         - echo "[TODO] Build project"
+
+lint:
+    stage: test
+    script:
+        - echo "[TODO] Run linter/static analyser"
