@@ -118,7 +118,10 @@ int main(void)
     fb_init();
 
     for (;;)
-    {
+    {   
+        // Disable bot-to-bot charging port
+        fb_b2b_disable();
+
         // Flash both leds in out of sync to indicate ready
         fb_set_led(D15);
         fb_clear_led(D16);
@@ -138,6 +141,9 @@ int main(void)
         // Turn both leds off during operation
         fb_clear_led(D15);
         fb_clear_led(D16);
+
+        // Enable bot-to-bot charging port
+        fb_b2b_enable();
 
         pwr_measure_demo();
         motor_measure_demo();
