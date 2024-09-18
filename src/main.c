@@ -16,6 +16,7 @@ LOG_MODULE_REGISTER(freebot, LOG_LEVEL_DBG);
 
 #include "freebot.h"
 #define FB_DEMO_DELAY K_MSEC(500)
+#define FB_DEMO_SPEED 75
 
 static fb_motor_angle_t motor_angles;
 static fb_motor_speed_t motor_speeds;
@@ -30,43 +31,43 @@ void pwr_measure_demo(void)
 
 void motor_drive_demo(void)
 {
-    fb_straight_forw();
+    fb_straight_forw(FB_DEMO_SPEED);
     LOG_DBG("Robot going forward");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_straight_back();
+    fb_straight_back(FB_DEMO_SPEED);
     LOG_DBG("Robot going backward");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_side_right();
+    fb_side_right(FB_DEMO_SPEED);
     LOG_DBG("Robot going right");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_side_left();
+    fb_side_left(FB_DEMO_SPEED);
     LOG_DBG("Robot going left");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_side_d45();
+    fb_side_d45(FB_DEMO_SPEED);
     LOG_DBG("Robot going 45°");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_side_d135();
+    fb_side_d135(FB_DEMO_SPEED);
     LOG_DBG("Robot going 135°");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_side_d225();
+    fb_side_d225(FB_DEMO_SPEED);
     LOG_DBG("Robot going 225°");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_side_d315();
+    fb_side_d315(FB_DEMO_SPEED);
     LOG_DBG("Robot going 315°");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_rotate_cw();
+    fb_rotate_cw(FB_DEMO_SPEED);
     LOG_DBG("Robot rotating clockwise");
     k_sleep(FB_DEMO_DELAY);
 
-    fb_rotate_ccw();
+    fb_rotate_ccw(FB_DEMO_SPEED);
     LOG_DBG("Robot rotating counterclockwise");
     k_sleep(FB_DEMO_DELAY);
 
@@ -83,7 +84,7 @@ void motor_measure_demo(void)
             motor_angles.back_left,
             motor_angles.back_right);
 
-    fb_rotate_cw();
+    fb_rotate_cw(FB_DEMO_SPEED);
     k_sleep(K_MSEC(200));
     fb_get_motor_speed(&motor_speeds);
     LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}",
@@ -110,6 +111,27 @@ void motor_measure_demo(void)
             motor_angles.front_right,
             motor_angles.back_left,
             motor_angles.back_right);
+}
+
+void motor_speed_demo(void)
+{
+    const int STEPS = 10;
+    for (int i = 0; i <= STEPS; i++)
+    {
+        fb_rotate_cw(100 * i / STEPS);
+        LOG_DBG("Target speed: %d", 100 * i / STEPS);
+        for (int j = 0; j < 10; j++)
+        {
+            k_sleep(K_MSEC(100));
+            fb_get_motor_speed(&motor_speeds);
+            LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}",
+                    motor_speeds.front_left,
+                    motor_speeds.front_right,
+                    motor_speeds.back_left,
+                    motor_speeds.back_right);
+        }
+    }
+    fb_stop();
 }
 
 int main(void)
@@ -149,6 +171,7 @@ int main(void)
         pwr_measure_demo();
         motor_measure_demo();
         motor_drive_demo();
+        motor_speed_demo();
     }
     return 0;
 }
