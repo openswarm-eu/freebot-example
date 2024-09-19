@@ -9,6 +9,8 @@
  *
  */
 
+#include "zephyr/drivers/spi.h"
+#include <sys/_stdint.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
@@ -78,39 +80,27 @@ void motor_drive_demo(void)
 void motor_measure_demo(void)
 {
     fb_get_motor_angle(&motor_angles);
-    LOG_DBG("{%d°, %d°, %d°, %d°}",
-            motor_angles.front_left,
-            motor_angles.front_right,
-            motor_angles.back_left,
-            motor_angles.back_right);
+    LOG_DBG("{%d°, %d°, %d°, %d°}", motor_angles.front_left, motor_angles.front_right,
+            motor_angles.back_left, motor_angles.back_right);
 
     fb_rotate_cw(FB_DEMO_SPEED);
     k_sleep(K_MSEC(200));
     fb_get_motor_speed(&motor_speeds);
-    LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}",
-            motor_speeds.front_left,
-            motor_speeds.front_right,
-            motor_speeds.back_left,
-            motor_speeds.back_right);
+    LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}", motor_speeds.front_left, motor_speeds.front_right,
+            motor_speeds.back_left, motor_speeds.back_right);
 
     fb_stop();
     for (int i = 0; i < 4; i++)
     {
         k_sleep(K_MSEC(100));
         fb_get_motor_speed(&motor_speeds);
-        LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}",
-                motor_speeds.front_left,
-                motor_speeds.front_right,
-                motor_speeds.back_left,
-                motor_speeds.back_right);
+        LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}", motor_speeds.front_left,
+                motor_speeds.front_right, motor_speeds.back_left, motor_speeds.back_right);
     }
 
     fb_get_motor_angle(&motor_angles);
-    LOG_DBG("{%d°, %d°, %d°, %d°}",
-            motor_angles.front_left,
-            motor_angles.front_right,
-            motor_angles.back_left,
-            motor_angles.back_right);
+    LOG_DBG("{%d°, %d°, %d°, %d°}", motor_angles.front_left, motor_angles.front_right,
+            motor_angles.back_left, motor_angles.back_right);
 }
 
 void motor_speed_demo(void)
@@ -124,11 +114,8 @@ void motor_speed_demo(void)
         {
             k_sleep(K_MSEC(100));
             fb_get_motor_speed(&motor_speeds);
-            LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}",
-                    motor_speeds.front_left,
-                    motor_speeds.front_right,
-                    motor_speeds.back_left,
-                    motor_speeds.back_right);
+            LOG_DBG("{%d rpm, %d rpm, %d rpm, %d rpm}", motor_speeds.front_left,
+                    motor_speeds.front_right, motor_speeds.back_left, motor_speeds.back_right);
         }
     }
     fb_stop();
@@ -140,10 +127,10 @@ int main(void)
     fb_init();
 
     for (;;)
-    {   
+    {
         // Enable bot-to-bot charging port when waiting
         fb_b2b_enable();
-        
+
         // Flash both leds in out of sync to indicate ready
         fb_set_led(D15);
         fb_clear_led(D16);
@@ -159,6 +146,12 @@ int main(void)
                 LOG_DBG("Button pressed");
                 break;
             }
+
+            // DEBUG: try SPI interface
+            uint8_t tx_buf[] = "Hello from SPI\n";
+            struct spi_buf tx_spi_buf = {.buf = (void *)&tx_buf, .len = sizeof(tx_buf)};
+            struct spi_buf_set tx_spi_buf_set = {.buffers = &tx_spi_buf, .count = 1};
+            fb_spi_tranceive(&tx_spi_buf_set, NULL);
         }
 
         // Turn both leds off during operation
