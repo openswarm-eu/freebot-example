@@ -1,5 +1,7 @@
 # FreeBot example using Zephyr
 
+> DISCLAIMER: This readme is outdated!
+
 - [FreeBot example using Zephyr](#freebot-example-using-zephyr)
   - [Setup](#setup)
   - [Build](#build)

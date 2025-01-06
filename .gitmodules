@@ -1,6 +1,0 @@
-[submodule "boards"]
-	path = boards
-	url = https://gitlab.kuleuven.be/distrinet/taskforces/nes/freebot/board-definitions.git
-[submodule "lib/freebot"]
-	path = lib/freebot
-	url = https://gitlab.kuleuven.be/distrinet/taskforces/nes/freebot/library.git
