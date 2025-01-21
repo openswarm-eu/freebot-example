@@ -7,10 +7,33 @@
 #include "capbot.h"
 #include <zephyr/kernel.h>
 
-void main(void)
+#define DELAY K_MSEC(1000)
+
+int main(void)
 {
+    if (cb_motor_init())
+    {
+        return -1;
+    }
+
     for (;;)
     {
-        k_sleep(K_MSEC(1000));
+        cb_drive_forw(20);
+        k_sleep(DELAY);
+        cb_drive_back(20);
+        k_sleep(DELAY);
+        cb_drive_right(60);
+        k_sleep(DELAY);
+        cb_drive_left(60);
+        k_sleep(DELAY);
+        cb_rotate_cw(80);
+        k_sleep(DELAY);
+        cb_rotate_ccw(80);
+        k_sleep(DELAY);
+        cb_stop();
+        k_sleep(DELAY);
     }
+
+    // Unreachable
+    return 0;
 }
