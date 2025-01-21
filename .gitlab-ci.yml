@@ -3,17 +3,32 @@ build:
     image: ghcr.io/nrfconnect/sdk-nrf-toolchain:v2.7.0
     variables:
         DEBIAN_FRONTEND: noninteractive # CI is a non-interactive shell
-        ACCEPT_JLINK_LICENSE: 0         # JLink isn't needed for building
+        ACCEPT_JLINK_LICENSE: 0 # JLink isn't needed for building
+        APPDIR: ./app
     script:
-        - west init -l
+        - cd $APPDIR
+        - west init --local
         - west update
-        - west build -b capbot
+        - west build --board capbot
     cache:
         key: west-cache
         paths:
-        - ../deps/
+            - deps/
     artifacts:
-      when: on_success
-      expire_in: "1 week"
-      paths:
-        - build/
+        when: on_success
+        expire_in: "1 week"
+        paths:
+            - $APPDIR/build/
+
+check_format:
+    image: ubuntu:latest
+    variables:
+        CLANG_FMT: clang-format-18
+    stage: test
+    before_script:
+        - apt-get update
+        - apt-get install git $CLANG_FMT -y
+    script:
+        - $CLANG_FMT --version
+        - $CLANG_FMT --dry-run --Werror $(git ls-files '*.c') $(git ls-files '*.h')
+    allow_failure: true

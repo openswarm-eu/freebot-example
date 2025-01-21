@@ -1,5 +1,8 @@
+# West workspace
+.west/
+
+# Dependencies
+deps/
+
 # Build outputs
 build*/
-
-# Cache
-.cache
