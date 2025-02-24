@@ -17,7 +17,7 @@ manifest:
         # Capbot's zephyr board definitions
         - name: capbot-zephyr-boards
           url: https://gitlab.kuleuven.be/distrinet/taskforces/nes/freebot/zephyr-boards
-          revision: zephyr-module # TODO: checkout specific version once stable
+          revision: v2.0
           path: deps/modules/capbot/boards
         # Capbot's zephyr library
         - name: capbot-zephyr-library
@@ -27,4 +27,3 @@ manifest:
 
     self:
         path: app
-
